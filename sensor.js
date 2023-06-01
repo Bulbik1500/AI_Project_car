@@ -8,7 +8,8 @@ class Sensor{
         this.rays=[];
         this.readings=[];
     }
-    update(roadBorders, traffic){
+
+    update(roadBorders,traffic){
         this.#castRays();
         this.readings=[];
         for(let i=0;i<this.rays.length;i++){
@@ -24,8 +25,9 @@ class Sensor{
 
     #getReading(ray,roadBorders,traffic){
         let touches=[];
-        for(let i = 0;i<roadBorders.length;i++){
-            const touch=getInstersection(
+
+        for(let i=0;i<roadBorders.length;i++){
+            const touch=getIntersection(
                 ray[0],
                 ray[1],
                 roadBorders[i][0],
@@ -36,10 +38,10 @@ class Sensor{
             }
         }
 
-      for(let i=0;i<traffic.length;i++){
+        for(let i=0;i<traffic.length;i++){
             const poly=traffic[i].polygon;
             for(let j=0;j<poly.length;j++){
-                const value=getInstersection(
+                const value=getIntersection(
                     ray[0],
                     ray[1],
                     poly[j],
@@ -62,27 +64,31 @@ class Sensor{
 
     #castRays(){
         this.rays=[];
-        for(let i=0;i < this.rayCount; i++){
+        for(let i=0;i<this.rayCount;i++){
             const rayAngle=lerp(
                 this.raySpread/2,
                 -this.raySpread/2,
-               this.rayCount==1?0.5:i/(this.rayCount-1)
+                this.rayCount==1?0.5:i/(this.rayCount-1)
             )+this.car.angle;
+
             const start={x:this.car.x, y:this.car.y};
             const end={
-                x:this.car.x-Math.sin(rayAngle)*this.rayLength,
-                y:this.car.y-Math.cos(rayAngle)*this.rayLength
+                x:this.car.x-
+                    Math.sin(rayAngle)*this.rayLength,
+                y:this.car.y-
+                    Math.cos(rayAngle)*this.rayLength
             };
             this.rays.push([start,end]);
         }
     }
+
     draw(ctx){
         for(let i=0;i<this.rayCount;i++){
             let end=this.rays[i][1];
             if(this.readings[i]){
                 end=this.readings[i];
             }
-             
+
             ctx.beginPath();
             ctx.lineWidth=2;
             ctx.strokeStyle="yellow";
@@ -94,11 +100,11 @@ class Sensor{
                 end.x,
                 end.y
             );
-            ctx.stroke();   
+            ctx.stroke();
 
             ctx.beginPath();
             ctx.lineWidth=2;
-            ctx.strokeStyle="red";
+            ctx.strokeStyle="black";
             ctx.moveTo(
                 this.rays[i][1].x,
                 this.rays[i][1].y
@@ -108,6 +114,6 @@ class Sensor{
                 end.y
             );
             ctx.stroke();
-        }     
-    }
+        }
+    }        
 }
